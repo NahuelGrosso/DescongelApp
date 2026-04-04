@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Vibration,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Svg, { Circle, Line, G } from 'react-native-svg';
@@ -26,6 +27,45 @@ const App = () => {
   const [inseminador, setInseminador] = useState('');
   const [descongelador, setDescongelador] = useState('');
 
+  //hora inicio, fin y cronometro
+  const [horaInicio, setHoraInicio] = useState(null);
+  const [segundosTranscurridos, setSegundosTranscurridos] = useState(0);
+  const [cronometroPausado, setCronometroPausado] = useState(false);
+
+  //
+  // Estado para controlar las 4 porciones: { activa: bool, segundos: 40, listo: bool }
+  const [pajuelas, setPajuelas] = useState([
+    { id: 0, activa: false, segundos: 40, listo: false },
+    { id: 1, activa: false, segundos: 40, listo: false },
+    { id: 2, activa: false, segundos: 40, listo: false },
+    { id: 3, activa: false, segundos: 40, listo: false },
+  ]);
+
+  // --- MOTOR DEL TIEMPO (Cronómetro de Sesión y Pajuelas) ---
+  useEffect(() => {
+    let intervalo: any = null;
+
+    if (pantalla === 'grafico' && !cronometroPausado) {
+      intervalo = setInterval(() => {
+        // 1. Sumamos tiempo a la sesión total
+        setSegundosTranscurridos(prev => prev + 1);
+
+        // 2. Bajamos tiempo a las pajuelas activas (esto lo usaremos en el siguiente paso)
+        setPajuelas(prev =>
+          prev.map(p => {
+            if (!p.activa) return p;
+            const nuevoTiempo = p.segundos - 1;
+            if (nuevoTiempo === 0) Vibration.vibrate(500); // Avisa al llegar a 0
+            return { ...p, segundos: nuevoTiempo, listo: nuevoTiempo <= 0 };
+          }),
+        );
+      }, 1000);
+    }
+
+    return () => clearInterval(intervalo); // Limpia el motor al salir
+  }, [pantalla, cronometroPausado]);
+
+  ////
   return (
     <View style={{ flex: 1 }}>
       {pantalla === 'formulario' && (
@@ -133,6 +173,7 @@ const App = () => {
           <TouchableOpacity
             style={styles.botonAdescongelar}
             onPress={() => {
+              if (!horaInicio) setHoraInicio(new Date().toLocaleTimeString()); // Guarda la hora
               setPantalla('grafico');
             }}
           >
@@ -145,6 +186,22 @@ const App = () => {
         <View style={styles.contenedorGrafico}>
           {/* Título blanco bien visible */}
           <Text style={styles.tituloTorta}>Termo de Descongelado</Text>
+
+          {/* Cronómetro de la Sesión Total */}
+          <View style={styles.contenedorCronometroTotal}>
+            <Text style={styles.textoRelojGrande}>
+              {Math.floor(segundosTranscurridos / 60)}:
+              {(segundosTranscurridos % 60).toString().padStart(2, '0')}
+            </Text>
+            <TouchableOpacity
+              style={styles.botonPausa}
+              onPress={() => setCronometroPausado(!cronometroPausado)}
+            >
+              <Text style={styles.textoBotonPausa}>
+                {cronometroPausado ? '▶️ REANUDAR' : '⏸️ PAUSAR SESIÓN'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.marcoCirculo}>
             <Svg height="380" width="380" viewBox="0 0 250 250">
@@ -296,11 +353,11 @@ const styles = StyleSheet.create({
   },
 
   tituloTorta: {
-    fontSize: 24,
-    color: '#FFFFFF', // Blanco puro para que se vea sí o sí
+    fontSize: 25,
+    color: '#ffffff', // Blanco puro para que se vea sí o sí
     fontWeight: 'bold',
     marginTop: 25,
-    marginBottom: 0,
+    marginBottom: 5,
     paddingTop: 0,
   },
   marcoCirculo: {
@@ -310,7 +367,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     paddingTop: 0,
-    marginTop: 50, // <-- Esto lo despega un poquito del título
+    marginTop: 20, // <-- Esto lo despega un poquito del título
   },
   botonVolverTorta: {
     backgroundColor: '#c0392b',
@@ -322,6 +379,40 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'center',
     marginBottom: 10,
+  },
+
+  //relojes
+  contenedorCronometroTotal: {
+    alignItems: 'center',
+    
+  },
+  textoRelojGrande: {
+    color: '#FFFFFF',
+    backgroundColor: '#000000',
+    fontWeight: 'bold',
+    zIndex: 10,
+    fontSize: 70,
+    borderRadius: 10,
+    paddingLeft: 25,
+    paddingRight: 25,
+  }, // Amarillo para que resalte
+  botonPausa: {
+    backgroundColor: 'rgba(8, 0, 0, 0.57)',
+    padding: 10,
+    width: 200,
+    height: 50,
+    borderRadius: 10,
+    marginTop: 5,
+    alignItems: 'center',
+    borderColor: 'rgb(249, 245, 245)',
+    borderWidth: 3,
+    
+  },
+  textoBotonPausa: {
+    color: '#ecf0f1',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
   },
 });
 
