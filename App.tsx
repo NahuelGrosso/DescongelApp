@@ -10,7 +10,9 @@ import {
   Vibration,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Svg, { Circle, Line, G } from 'react-native-svg';
+import Svg, { Circle, Line, G, Path, Text as SvgText } from 'react-native-svg';
+import Sound from 'react-native-sound';
+
 
 const App = () => {
   const [pantalla, setPantalla] = useState<any>('formulario');
@@ -55,7 +57,22 @@ const App = () => {
           prev.map(p => {
             if (!p.activa) return p;
             const nuevoTiempo = p.segundos - 1;
-            if (nuevoTiempo === 0) Vibration.vibrate(500); // Avisa al llegar a 0
+
+            if (nuevoTiempo === 0) {
+              Vibration.vibrate(500); // Tu vibración de siempre
+
+              // --- NUEVO: El "Pip" del sistema ---
+           //   const beep = new Sound(
+            //    'gui_notification_focused01.mp3',
+            //    Sound.MAIN_BUNDLE,
+          //      error => {
+            //      if (!error) {
+             //       beep.play(() => beep.release()); // Suena y libera la memoria
+             //     }
+            //    },
+           //   );
+            }
+
             return { ...p, segundos: nuevoTiempo, listo: nuevoTiempo <= 0 };
           }),
         );
@@ -65,6 +82,20 @@ const App = () => {
     return () => clearInterval(intervalo); // Limpia el motor al salir
   }, [pantalla, cronometroPausado]);
 
+  ////
+  const manejarToquePajuela = (index: any) => {
+    const nuevas = [...pajuelas];
+    const p = nuevas[index];
+
+    if (!p.activa) {
+      // 1. Toque Inicial: Se pone Celeste y arranca 40s
+      nuevas[index] = { ...p, activa: true, segundos: 40, listo: false };
+    } else {
+      // 3. Extracción: Si ya estaba activa, un toque la limpia (Vuelve a Negro)
+      nuevas[index] = { ...p, activa: false, segundos: 40, listo: false };
+    }
+    setPajuelas(nuevas);
+  };
   ////
   return (
     <View style={{ flex: 1 }}>
@@ -205,17 +236,54 @@ const App = () => {
 
           <View style={styles.marcoCirculo}>
             <Svg height="380" width="380" viewBox="0 0 250 250">
-              {/* Círculo negro con borde gris grueso (el termo) */}
+              {/* 1. El fondo del termo */}
               <Circle
                 cx="125"
                 cy="125"
                 r="115"
                 fill="#000000"
-                stroke="#dcd8d8"
+                stroke="grey"
                 strokeWidth="10"
               />
 
-              {/* La cruz gris de las 4 divisiones fijas */}
+              {/* 2. Las 4 Porciones Tactiles */}
+              {pajuelas.map((p, i) => {
+                // Calculamos la posición del número en cada cuarto
+                const centroX = i === 0 || i === 3 ? 85 : 165;
+                const centroY = i === 0 || i === 1 ? 85 : 165;
+
+                // Color según estado: Negro (vacío), Celeste (frío), Verde (listo)
+                let colorPorcion = 'transparent';
+                if (p.activa) colorPorcion = p.listo ? '#27ae60' : '#3498db';
+
+                return (
+                  <G key={i} onPress={() => manejarToquePajuela(i)}>
+                    {/* Un cuarto de círculo invisible/colorido que detecta el toque */}
+                    <Path
+                      d={obtenerPathCuadrante(i)}
+                      fill={colorPorcion}
+                      opacity={0.6}
+                    />
+                    {/* El número de los segundos */}
+                    {p.activa && (
+                      <SvgText
+                        x={centroX}
+                        y={centroY}
+                        fill="white"
+                        fontSize="24"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                      >
+                        {p.listo
+                          ? `+${Math.abs(p.segundos)}s`
+                          : `${p.segundos}s`}
+                      </SvgText>
+                    )}
+                  </G>
+                );
+              })}
+
+              {/* 3. La cruz gris fija (encima de todo) */}
               <Line
                 x1="125"
                 y1="10"
@@ -384,7 +452,6 @@ const styles = StyleSheet.create({
   //relojes
   contenedorCronometroTotal: {
     alignItems: 'center',
-    
   },
   textoRelojGrande: {
     color: '#FFFFFF',
@@ -406,7 +473,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'rgb(249, 245, 245)',
     borderWidth: 3,
-    
   },
   textoBotonPausa: {
     color: '#ecf0f1',
@@ -415,5 +481,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+const obtenerPathCuadrante = (i: any) => {
+  const paths = [
+    'M 125 125 L 125 10 A 115 115 0 0 0 10 125 Z', // Arriba Izquierda
+    'M 125 125 L 240 125 A 115 115 0 0 0 125 10 Z', // Arriba Derecha
+    'M 125 125 L 125 240 A 115 115 0 0 0 240 125 Z', // Abajo Derecha
+    'M 125 125 L 10 125 A 115 115 0 0 0 125 240 Z', // Abajo Izquierda
+  ];
+  return paths[i];
+};
 
 export default App;
