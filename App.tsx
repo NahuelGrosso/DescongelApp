@@ -30,7 +30,7 @@ const App = () => {
   const [descongelador, setDescongelador] = useState('');
 
   //hora inicio, fin y cronometro
-  const [horaInicio, setHoraInicio] = useState(null);
+  const [horaInicio, setHoraInicio] = useState<string | null>(null);
   const [segundosTranscurridos, setSegundosTranscurridos] = useState(0);
   const [cronometroPausado, setCronometroPausado] = useState(false);
 
