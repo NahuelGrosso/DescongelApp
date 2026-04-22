@@ -49,12 +49,14 @@ const App = () => {
   useEffect(() => {
     let intervalo: any = null;
 
-    if (pantalla === 'grafico' && !cronometroPausado) {
+    if (pantalla === 'grafico') {
       intervalo = setInterval(() => {
-        // 1. Sumamos tiempo a la sesión total
-        setSegundosTranscurridos(prev => prev + 1);
+        // 🟢 Cronómetro general (respeta pausa)
+        if (!cronometroPausado) {
+          setSegundosTranscurridos(prev => prev + 1);
+        }
 
-        // 2. Bajamos tiempo a las pajuelas activas (esto lo usaremos en el siguiente paso)
+        // 🔵 Pajuelas (SIEMPRE corren)
         setPajuelas(prev =>
           prev.map(p => {
             if (!p.activa) return p;

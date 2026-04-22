@@ -58,15 +58,17 @@ export const styles = StyleSheet.create({
   },
 
   botonTexto: {
-    color: '#fff',
+    color: '#f8f8f8',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-
-  datoFijo: {
+    },
+  //fin formulario
+ 
+  //
+ /* datoFijo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#27ae60',
+    color: '#2c2017',
     marginBottom: 10,
     paddingVertical: 5,
   },
@@ -109,16 +111,16 @@ export const styles = StyleSheet.create({
     marginTop: 30,
   },
 
-  textoVolver: {
-    color: '#7f8c8d',
-    marginTop: 25,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-
+ // textoVolver: {
+   // color: '#7f8c8d',
+    //marginTop: 25,
+    //textAlign: 'center',
+   // fontSize: 16,
+  //},
+*/
   contenedorGrafico: {
     flex: 1,
-    backgroundColor: '#417291',
+    backgroundColor: '#fafafa',
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 2,
@@ -126,10 +128,10 @@ export const styles = StyleSheet.create({
 
   tituloTorta: {
     fontSize: 25,
-    color: '#ffffff',
+    color: '#0c0c0c',
     fontWeight: 'bold',
-    marginTop: 25,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 1,
   },
 
   marcoCirculo: {
@@ -138,15 +140,35 @@ export const styles = StyleSheet.create({
     height: 400,
     backgroundColor: 'transparent',
     alignItems: 'center',
-    marginTop: 20,
-  },
+    marginTop: 2,
+    },
+  
+  // BOTONES finales //
+contenedorBotones: {
+  flexDirection: 'row',
+  justifyContent: 'space-between', 
+  width: '100%',
+  paddingHorizontal: 20,
+  marginTop: 10,
+},
+
+botonFinalizar: {
+  backgroundColor: '#27ae60',
+  padding: 15,
+  borderRadius: 10,
+  marginBottom: 10,
+    marginTop: 10,
+  alignItems: 'center',
+  width: '40%',
+},
 
   botonVolverTorta: {
-    backgroundColor: '#c0392b',
+    backgroundColor: '#ad1606',
     padding: 15,
     borderRadius: 10,
-    marginTop: 30,
-    width: '30%',
+    marginTop: 10,
+    marginBottom: 10,
+    width: '40%',
     alignItems: 'center',
   },
 
@@ -164,21 +186,21 @@ export const styles = StyleSheet.create({
   },
 
   botonPausa: {
-    backgroundColor: 'rgba(8, 0, 0, 0.57)',
+    backgroundColor: 'rgba(8, 0, 0, 0.7)',
     padding: 10,
     width: 200,
     height: 50,
     borderRadius: 10,
     marginTop: 5,
     alignItems: 'center',
-    borderColor: '#fff',
-    borderWidth: 3,
+    borderColor: '#faf5f5',
+    borderWidth: 2,
   },
 
   textoBotonPausa: {
     color: '#ecf0f1',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 15,
     textAlign: 'center',
   },
 });
