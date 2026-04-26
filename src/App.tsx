@@ -65,16 +65,11 @@ const App = () => {
             if (nuevoTiempo === 0) {
               Vibration.vibrate(500); // Tu vibración de siempre
 
-              // --- NUEVO: El "Pip" del sistema ---
-              //   const beep = new Sound(
-              //    'gui_notification_focused01.mp3',
-              //    Sound.MAIN_BUNDLE,
-              //      error => {
-              //      if (!error) {
-              //       beep.play(() => beep.release()); // Suena y libera la memoria
-              //     }
-              //    },
-              //   );
+               const beep = new Sound('beep', Sound.MAIN_BUNDLE, error => {
+                 if (!error) {
+                   beep.play(() => beep.release());
+                 }
+               });
             }
 
             return { ...p, segundos: nuevoTiempo, listo: nuevoTiempo <= 0 };
