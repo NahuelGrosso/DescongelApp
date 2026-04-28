@@ -49,6 +49,14 @@ export const styles = StyleSheet.create({
     color: '#333',
   },
 
+  datoFijo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#27ae60',
+    marginBottom: 10,
+    paddingVertical: 5,
+  },
+
   boton: {
     backgroundColor: '#27ae60',
     padding: 15,
@@ -61,63 +69,9 @@ export const styles = StyleSheet.create({
     color: '#f8f8f8',
     fontWeight: 'bold',
     fontSize: 16,
-    },
+  },
   //fin formulario
- 
-  //
- /* datoFijo: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2c2017',
-    marginBottom: 10,
-    paddingVertical: 5,
-  },
 
-  contenedorCentrado: {
-    flex: 1,
-    backgroundColor: '#f0f2f5',
-    justifyContent: 'center',
-    padding: 30,
-  },
-
-  subtitulo: {
-    fontSize: 18,
-    color: '#34495e',
-    textAlign: 'center',
-    marginBottom: 25,
-  },
-
-  pickerBorde: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    height: 55,
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-
-  pickerTexto: {
-    color: '#333',
-    height: 55,
-    width: '100%',
-  },
-
-  botonAdescongelar: {
-    backgroundColor: '#1a5276',
-    padding: 18,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 30,
-  },
-
- // textoVolver: {
-   // color: '#7f8c8d',
-    //marginTop: 25,
-    //textAlign: 'center',
-   // fontSize: 16,
-  //},
-*/
   contenedorGrafico: {
     flex: 1,
     backgroundColor: '#fafafa',
@@ -141,26 +95,26 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     marginTop: 2,
-    },
-  
-  // BOTONES finales //
-contenedorBotones: {
-  flexDirection: 'row',
-  justifyContent: 'space-between', 
-  width: '100%',
-  paddingHorizontal: 20,
-  marginTop: 10,
-},
+  },
 
-botonFinalizar: {
-  backgroundColor: '#27ae60',
-  padding: 15,
-  borderRadius: 10,
-  marginBottom: 10,
+  // BOTONES finales //
+  contenedorBotones: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
     marginTop: 10,
-  alignItems: 'center',
-  width: '40%',
-},
+  },
+
+  botonFinalizar: {
+    backgroundColor: '#27ae60',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginTop: 10,
+    alignItems: 'center',
+    width: '40%',
+  },
 
   botonVolverTorta: {
     backgroundColor: '#ad1606',
@@ -202,5 +156,77 @@ botonFinalizar: {
     fontWeight: 'bold',
     fontSize: 15,
     textAlign: 'center',
+  },
+
+  vacasRestantes: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 3,
+    borderColor: '#080808',
+    padding: 8,
+    margin: 5,
+    width: '90%',
+    marginTop: 15,
+  },
+
+  textoVacas: {
+    color: '#080808',
+    fontSize: 30,
+  },
+
+  numeroVacas: {
+    color: '#928c8c',
+    fontSize: 30,
+    borderStyle: 'solid',
+    borderWidth: 2,
+
+    backgroundColor: '#080808',
+    borderRadius: 8,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+
+  filaRotas: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    borderRadius: 10,
+    borderStyle: 'solid',
+    borderWidth: 3,
+    borderColor: '#080808',
+    padding: 8,
+    margin: 5,
+    width: '90%',
+    marginTop: 15,
+  },
+  textoRotas: {
+    color: '#080808',
+    fontSize: 30,
+  },
+  numeroRotas: {
+    color: '#928c8c',
+    fontSize: 30,
+    borderStyle: 'solid',
+    borderWidth: 2,
+
+    backgroundColor: '#080808',
+    borderRadius: 8,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  botonRotas: {
+    backgroundColor: '#e74c3c',
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderColor: '#080808',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    paddingRight: 25,
+    paddingLeft: 25,
   },
 });

@@ -14,6 +14,10 @@ type Pajuela = {
 type Props = {
   pajuelas: Pajuela[];
 
+  vacasRestantes: number;
+
+  setHoraFinActividad: React.Dispatch<React.SetStateAction<string>>;
+
   manejarToquePajuela: (index: number) => void;
 
   segundosTranscurridos: number;
@@ -23,15 +27,22 @@ type Props = {
   setCronometroPausado: (v: boolean) => void;
 
   setPantalla: (pantalla: string) => void;
+
+  pajuelasRotas: number;
+  setPajuelasRotas: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export const GraficoScreen = ({
+  vacasRestantes,
+  setHoraFinActividad,
   pajuelas,
   manejarToquePajuela,
   segundosTranscurridos,
   cronometroPausado,
   setCronometroPausado,
   setPantalla,
+  pajuelasRotas,
+  setPajuelasRotas,
 }: Props) => {
   return (
     <View style={styles.contenedorGrafico}>
@@ -54,7 +65,6 @@ export const GraficoScreen = ({
         {/* Título */}
         <Text style={styles.tituloTorta}>Termo de Descongelado</Text>
       </View>
-
       {/* Gráfico */}
       <View style={styles.marcoCirculo}>
         <Svg height="380" width="380" viewBox="0 0 250 250">
@@ -114,8 +124,26 @@ export const GraficoScreen = ({
             strokeWidth="3"
           />
         </Svg>
-      </View>
 
+        <View style={styles.vacasRestantes}>
+          <Text style={styles.textoVacas}>Vacas restantes:</Text>
+
+          <Text style={styles.numeroVacas}>{vacasRestantes}</Text>
+        </View>
+
+        <View style={styles.filaRotas}>
+          <Text style={styles.textoRotas}>Pajuelas rotas:</Text>
+
+          <TouchableOpacity
+            style={styles.botonRotas}
+            onPress={() => setPajuelasRotas(prev => prev + 1)}
+          >
+            <Text style={styles.botonTexto}>+1</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.numeroRotas}>{pajuelasRotas}</Text>
+        </View>
+      </View>
       <View style={styles.contenedorBotones}>
         {/* Botón volver */}
         <TouchableOpacity
@@ -129,8 +157,16 @@ export const GraficoScreen = ({
         <TouchableOpacity
           style={styles.botonFinalizar}
           onPress={() => {
-            // después definimos qué hace
-            console.log('Finalizar actividad');
+            setHoraFinActividad(
+              new Date().toLocaleTimeString('es-AR', {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+            );
+
+            setCronometroPausado(true);
+
+            setPantalla('resumen');
           }}
         >
           <Text style={styles.botonTexto}>FINALIZAR</Text>

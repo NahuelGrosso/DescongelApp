@@ -13,26 +13,31 @@ import { Picker } from '@react-native-picker/picker';
 import Svg, { Circle, Line, G, Path, Text as SvgText } from 'react-native-svg';
 import { FormularioScreen } from './screens/FormularioScreen';
 import { GraficoScreen } from './screens/GraficoScreen';
+import ResumenScreen from './screens/ResumenScreen';
 import { styles } from './styles';
 
 import Sound from 'react-native-sound';
 
 const App = () => {
   const [pantalla, setPantalla] = useState<any>('formulario');
-  const fecha = new Date().toLocaleDateString();
+  const fecha = new Date().toLocaleDateString('es-AR');
 
   const [lugar, setLugar] = useState('');
   const [establecimiento, setEstablecimiento] = useState('');
   const [rodeo, setRodeo] = useState('');
   const [raza, setRaza] = useState('');
-  const [cantidad, setCantidad] = useState('');
+  const [cantidadVacas, setCantidadVacas] = useState('');
   const [semenDe, setSemenDe] = useState('');
   const [toro, setToro] = useState('');
   const [inseminador, setInseminador] = useState('');
   const [descongelador, setDescongelador] = useState('');
 
+  const [vacasRestantes, setVacasRestantes] = useState(0);
+  const [pajuelasRotas, setPajuelasRotas] = useState(0);
+
   //hora inicio, fin y cronometro
-  const [horaInicio, setHoraInicio] = useState<string | null>(null);
+  const [horaInicioActividad, setHoraInicioActividad] = useState('');
+  const [horaFinActividad, setHoraFinActividad] = useState('');
   const [segundosTranscurridos, setSegundosTranscurridos] = useState(0);
   const [cronometroPausado, setCronometroPausado] = useState(false);
 
@@ -65,11 +70,11 @@ const App = () => {
             if (nuevoTiempo === 0) {
               Vibration.vibrate(500); // Tu vibración de siempre
 
-               const beep = new Sound('beep', Sound.MAIN_BUNDLE, error => {
-                 if (!error) {
-                   beep.play(() => beep.release());
-                 }
-               });
+              const beep = new Sound('beep', Sound.MAIN_BUNDLE, error => {
+                if (!error) {
+                  beep.play(() => beep.release());
+                }
+              });
             }
 
             return { ...p, segundos: nuevoTiempo, listo: nuevoTiempo <= 0 };
@@ -88,10 +93,23 @@ const App = () => {
 
     if (!p.activa) {
       // 1. Toque Inicial: Se pone Celeste y arranca 40s
-      nuevas[index] = { ...p, activa: true, segundos: 40, listo: false };
+      nuevas[index] = {
+        ...p,
+        activa: true,
+        segundos: 40,
+        listo: false
+      };
     } else {
+      if (p.listo) {
+        setVacasRestantes(prev =>Math.max(prev - 1, 0))
+      }
       // 3. Extracción: Si ya estaba activa, un toque la limpia (Vuelve a Negro)
-      nuevas[index] = { ...p, activa: false, segundos: 40, listo: false };
+      nuevas[index] = {
+        ...p,
+        activa: false,
+        segundos: 40,
+        listo: false
+      };
     }
     setPajuelas(nuevas);
   };
@@ -101,6 +119,9 @@ const App = () => {
       {pantalla === 'formulario' && (
         <FormularioScreen
           setPantalla={setPantalla}
+          setHoraInicioActividad={setHoraInicioActividad}
+          setVacasRestantes={setVacasRestantes}
+          fecha={fecha}
           lugar={lugar}
           setLugar={setLugar}
           establecimiento={establecimiento}
@@ -109,8 +130,8 @@ const App = () => {
           setRodeo={setRodeo}
           raza={raza}
           setRaza={setRaza}
-          cantidad={cantidad}
-          setCantidad={setCantidad}
+          cantidadVacas={cantidadVacas}
+          setCantidadVacas={setCantidadVacas}
           semenDe={semenDe}
           setSemenDe={setSemenDe}
           toro={toro}
@@ -124,11 +145,34 @@ const App = () => {
 
       {pantalla === 'grafico' && (
         <GraficoScreen
+          vacasRestantes={vacasRestantes}
+          setHoraFinActividad={setHoraFinActividad}
           pajuelas={pajuelas}
           manejarToquePajuela={manejarToquePajuela}
           segundosTranscurridos={segundosTranscurridos}
           cronometroPausado={cronometroPausado}
           setCronometroPausado={setCronometroPausado}
+          setPantalla={setPantalla}
+          pajuelasRotas={pajuelasRotas}
+          setPajuelasRotas={setPajuelasRotas}
+        />
+      )}
+
+      {pantalla === 'resumen' && (
+        <ResumenScreen
+          fecha={fecha}
+          lugar={lugar}
+          establecimiento={establecimiento}
+          rodeo={rodeo}
+          raza={raza}
+          cantidadVacas={cantidadVacas}
+          semenDe={semenDe}
+          toro={toro}
+          inseminador={inseminador}
+          descongelador={descongelador}
+          horaInicioActividad={horaInicioActividad}
+          horaFinActividad={horaFinActividad}
+          segundosTranscurridos={segundosTranscurridos}
           setPantalla={setPantalla}
         />
       )}

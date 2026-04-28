@@ -9,7 +9,13 @@ import {
 import { styles } from '../styles';
 
 type Props = {
+  fecha: string;
+
+  setHoraInicioActividad: React.Dispatch<React.SetStateAction<string>>;
+
   setPantalla: (pantalla: string) => void;
+
+  setVacasRestantes: React.Dispatch<React.SetStateAction<number>>;
 
   lugar: string;
   setLugar: (v: string) => void;
@@ -23,8 +29,8 @@ type Props = {
   raza: string;
   setRaza: (v: string) => void;
 
-  cantidad: string;
-  setCantidad: (v: string) => void;
+  cantidadVacas: string;
+  setCantidadVacas: (v: string) => void;
 
   semenDe: string;
   setSemenDe: (v: string) => void;
@@ -37,11 +43,13 @@ type Props = {
 
   descongelador: string;
   setDescongelador: (v: string) => void;
-
 };
 
 export const FormularioScreen = ({
+  fecha,
   setPantalla,
+  setHoraInicioActividad,
+  setVacasRestantes,
   lugar,
   setLugar,
   establecimiento,
@@ -50,8 +58,8 @@ export const FormularioScreen = ({
   setRodeo,
   raza,
   setRaza,
-  cantidad,
-  setCantidad,
+  cantidadVacas,
+  setCantidadVacas,
   semenDe,
   setSemenDe,
   toro,
@@ -60,7 +68,6 @@ export const FormularioScreen = ({
   setInseminador,
   descongelador,
   setDescongelador,
-  
 }: Props) => {
   return (
     <ScrollView style={styles.contenedor}>
@@ -68,6 +75,9 @@ export const FormularioScreen = ({
 
       <View style={styles.tarjeta}>
         <Text style={styles.headerSeccion}>📍 Datos del Rodeo</Text>
+
+        <Text style={styles.label}>Fecha:</Text>
+        <Text style={styles.datoFijo}>{fecha}</Text>
 
         <Text style={styles.label}>Lugar:</Text>
         <TextInput
@@ -77,7 +87,6 @@ export const FormularioScreen = ({
           value={lugar}
         />
 
-    
         <Text style={styles.label}>Establecimiento:</Text>
         <TextInput
           style={styles.input}
@@ -107,8 +116,8 @@ export const FormularioScreen = ({
           style={styles.input}
           placeholder="0"
           keyboardType="numeric"
-          onChangeText={setCantidad}
-          value={cantidad}
+          onChangeText={setCantidadVacas}
+          value={cantidadVacas}
         />
 
         <Text style={styles.headerSeccion}>🧬 Datos del Semen</Text>
@@ -141,7 +150,20 @@ export const FormularioScreen = ({
 
         <TouchableOpacity
           style={styles.boton}
-          onPress={() => setPantalla('grafico')}
+          onPress={() => {
+            setHoraInicioActividad(
+              new Date().toLocaleTimeString('es-AR', {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+            );
+
+            setVacasRestantes(Number(cantidadVacas));
+
+
+            setPantalla('grafico');
+
+          }}
         >
           <Text style={styles.botonTexto}>A DESCONGELAR</Text>
         </TouchableOpacity>
