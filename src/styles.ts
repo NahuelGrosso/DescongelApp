@@ -1,16 +1,59 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  contenedorInicio: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 25,
+    backgroundColor: '#020202',
+  },
+  logoInicio: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  tituloInicio: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#bde1f8',
+    textAlign: 'center',
+    letterSpacing: 3,
+    marginTop: 30,
+    marginBottom: 20,
+  },
+
+  scrollDetalle: {
+    paddingTop: 1,
+    paddingBottom: 10,
+    flexGrow: 1,
+  },
+
   contenedor: {
     flex: 1,
     backgroundColor: '#f0f2f5',
     padding: 20,
   },
 
+  labelMes: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+
+  tarjetaMes: {
+    backgroundColor: '#2c3e50',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 8,
+    marginTop: 10,
+  },
+
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a5276',
+    color: '#76a1bb',
     textAlign: 'center',
     marginTop: 30,
     marginBottom: 20,
@@ -37,7 +80,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#7f8c8d',
-    marginTop: 10,
+    marginTop: 0,
   },
 
   input: {
@@ -228,5 +271,30 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     paddingRight: 25,
     paddingLeft: 25,
+  },
+
+  filaBotonesResumen: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+
+  botonMini: {
+    backgroundColor: '#34495e',
+    flex: 1,
+    marginHorizontal: 4,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  textoBotonMini: {
+    fontSize: 11,
+    color: '#f8f2f2',
+  },
+
+  filaBotonesFinales: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
 });

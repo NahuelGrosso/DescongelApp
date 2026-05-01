@@ -71,7 +71,7 @@ export const FormularioScreen = ({
 }: Props) => {
   return (
     <ScrollView style={styles.contenedor}>
-      <Text style={styles.titulo}>DescongelApp 🐄</Text>
+      <Text style={styles.titulo}>DescongelApp 🐂</Text>
 
       <View style={styles.tarjeta}>
         <Text style={styles.headerSeccion}>📍 Datos del Rodeo</Text>
@@ -160,9 +160,7 @@ export const FormularioScreen = ({
 
             setVacasRestantes(Number(cantidadVacas));
 
-
             setPantalla('grafico');
-
           }}
         >
           <Text style={styles.botonTexto}>A DESCONGELAR</Text>

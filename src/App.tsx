@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import {
   View,
   Text,
@@ -9,17 +10,19 @@ import {
   Alert,
   Vibration,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import Svg, { Circle, Line, G, Path, Text as SvgText } from 'react-native-svg';
+import { InicioScreen } from './screens/InicioScreen';
+import { DetalleArchivoScreen } from './screens/DetalleArchivoScreen';
+import { ArchivosScreen } from './screens/ArchivosScreen';
 import { FormularioScreen } from './screens/FormularioScreen';
 import { GraficoScreen } from './screens/GraficoScreen';
 import ResumenScreen from './screens/ResumenScreen';
-import { styles } from './styles';
 
 import Sound from 'react-native-sound';
 
 const App = () => {
-  const [pantalla, setPantalla] = useState<any>('formulario');
+  const [archivoCargado, setArchivoCargado] = useState<any>(null);
+
+  const [pantalla, setPantalla] = useState('inicio');
   const fecha = new Date().toLocaleDateString('es-AR');
 
   const [lugar, setLugar] = useState('');
@@ -34,6 +37,7 @@ const App = () => {
 
   const [vacasRestantes, setVacasRestantes] = useState(0);
   const [pajuelasRotas, setPajuelasRotas] = useState(0);
+  const [pajuelasUtilizadas, setPajuelasUtilizadas] = useState(0);
 
   //hora inicio, fin y cronometro
   const [horaInicioActividad, setHoraInicioActividad] = useState('');
@@ -55,6 +59,7 @@ const App = () => {
     let intervalo: any = null;
 
     if (pantalla === 'grafico') {
+
       intervalo = setInterval(() => {
         // 🟢 Cronómetro general (respeta pausa)
         if (!cronometroPausado) {
@@ -83,7 +88,9 @@ const App = () => {
       }, 1000);
     }
 
-    return () => clearInterval(intervalo); // Limpia el motor al salir
+    return () => {
+      clearInterval(intervalo); // Limpia el motor al salir
+    };
   }, [pantalla, cronometroPausado]);
 
   ////
@@ -101,7 +108,8 @@ const App = () => {
       };
     } else {
       if (p.listo) {
-        setVacasRestantes(prev =>Math.max(prev - 1, 0))
+        setVacasRestantes(prev => Math.max(prev - 1, 0))
+        setPajuelasUtilizadas(prev => prev + 1);
       }
       // 3. Extracción: Si ya estaba activa, un toque la limpia (Vuelve a Negro)
       nuevas[index] = {
@@ -116,6 +124,15 @@ const App = () => {
   ////
   return (
     <View style={{ flex: 1 }}>
+      {pantalla === 'inicio' && <InicioScreen setPantalla={setPantalla} />}
+
+      {pantalla === 'archivos' && (
+        <ArchivosScreen
+          setPantalla={setPantalla}
+          setArchivoCargado={setArchivoCargado}
+        />
+      )}
+
       {pantalla === 'formulario' && (
         <FormularioScreen
           setPantalla={setPantalla}
@@ -173,6 +190,15 @@ const App = () => {
           horaInicioActividad={horaInicioActividad}
           horaFinActividad={horaFinActividad}
           segundosTranscurridos={segundosTranscurridos}
+          pajuelasUtilizadas={pajuelasUtilizadas}
+          pajuelasRotas={pajuelasRotas}
+          setPantalla={setPantalla}
+        />
+      )}
+
+      {pantalla === 'resumenArchivo' && archivoCargado && (
+        <DetalleArchivoScreen
+          archivo={archivoCargado}
           setPantalla={setPantalla}
         />
       )}
