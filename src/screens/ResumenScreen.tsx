@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   BackHandler,
-  Alert
+  Alert,
 } from 'react-native';
 import XLSX from 'xlsx';
 import Share from 'react-native-share';
@@ -30,6 +30,8 @@ type Props = {
   pajuelasUtilizadas: number;
   pajuelasRotas: number;
 
+  setModoEdicion: any;
+
   setPantalla: any;
 };
 
@@ -51,6 +53,7 @@ export default function ResumenScreen({
   pajuelasUtilizadas,
   pajuelasRotas,
   setPantalla,
+  setModoEdicion,
 }: Props) {
   const horas = Math.floor(segundosTranscurridos / 3600);
   const minutos = Math.floor((segundosTranscurridos % 3600) / 60);
@@ -59,6 +62,8 @@ export default function ResumenScreen({
   const duracion = `${horas.toString().padStart(2, '0')}:${minutos
     .toString()
     .padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+  const [actividadGuardada, setActividadGuardada] = useState(false);
   
   const datos = {
     fecha,
@@ -77,7 +82,7 @@ export default function ResumenScreen({
     pajuelasUtilizadas,
     pajuelasRotas,
   };
-  
+
   const formatearTitulo = (texto: string) => {
     return texto
       .replace(/([A-Z])/g, ' $1')
@@ -87,7 +92,6 @@ export default function ResumenScreen({
 
   const guardarArchivo = async () => {
     try {
-     
       const carpeta = RNFS.DownloadDirectoryPath + '/DescongelApp';
 
       const existeCarpeta = await RNFS.exists(carpeta);
@@ -106,7 +110,7 @@ export default function ResumenScreen({
         item.name.startsWith(fechaArchivo + '_' + establecimientoArchivo),
       );
 
-      const numeroRodeo = archivosRelacionados.length + 1 ;
+      const numeroRodeo = archivosRelacionados.length + 1;
 
       const nombreArchivo =
         fechaArchivo +
@@ -119,6 +123,8 @@ export default function ResumenScreen({
       const ruta = carpeta + '/' + nombreArchivo;
 
       await RNFS.writeFile(ruta, JSON.stringify(datos, null, 2), 'utf8');
+
+      setActividadGuardada(true);
 
       Alert.alert('Éxito', 'Archivo guardado en Descargas/DescongelApp');
     } catch (error) {
@@ -136,6 +142,10 @@ export default function ResumenScreen({
 
   const descargarExcel = async () => {
     try {
+      if (!actividadGuardada) {
+        await guardarArchivo();
+      }
+
       const ws = XLSX.utils.aoa_to_sheet(datosExcel);
 
       const wb = XLSX.utils.book_new();
@@ -158,6 +168,8 @@ export default function ResumenScreen({
 
       await RNFS.writeFile(ruta, excel, 'base64');
 
+      setActividadGuardada(true);
+
       Alert.alert('Éxito', 'Excel guardado en Descargas/DescongelApp');
     } catch (error) {
       Alert.alert('Error', 'No se pudo descargar Excel');
@@ -166,6 +178,10 @@ export default function ResumenScreen({
 
   const compartirExcel = async () => {
     try {
+      if (!actividadGuardada) {
+        await guardarArchivo();
+      }
+
       const ws = XLSX.utils.aoa_to_sheet(datosExcel);
 
       const wb = XLSX.utils.book_new();
@@ -178,7 +194,7 @@ export default function ResumenScreen({
       });
 
       const nombre =
-        'IATF_'+
+        'IATF_' +
         fecha.replace(/\//g, '-') +
         '_' +
         establecimiento.replace(/\s/g, '_') +
@@ -228,7 +244,10 @@ export default function ResumenScreen({
 
       <TouchableOpacity
         style={styles.boton}
-        onPress={() => setPantalla('formulario')}
+        onPress={() => {
+          setModoEdicion(true);
+          setPantalla('formulario');
+        }}
       >
         <Text style={styles.botonTexto}>EDITAR</Text>
       </TouchableOpacity>

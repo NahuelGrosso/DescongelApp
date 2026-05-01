@@ -22,6 +22,15 @@ export const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 20,
   },
+  latapera: {
+    color: '#e7e2e2',
+    textAlign: 'center',
+    fontSize: 8,
+    letterSpacing: 3,
+    marginTop: 140,
+
+    //justifyContent: 'center',
+  },
 
   scrollDetalle: {
     paddingTop: 1,
@@ -112,6 +121,15 @@ export const styles = StyleSheet.create({
     color: '#f8f8f8',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+
+  filaBotonesCentro: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+
+    marginTop: 12,
   },
   //fin formulario
 

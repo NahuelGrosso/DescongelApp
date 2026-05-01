@@ -43,6 +43,9 @@ type Props = {
 
   descongelador: string;
   setDescongelador: (v: string) => void;
+
+  modoEdicion: boolean;
+  setModoEdicion: any;
 };
 
 export const FormularioScreen = ({
@@ -68,6 +71,9 @@ export const FormularioScreen = ({
   setInseminador,
   descongelador,
   setDescongelador,
+
+  modoEdicion,
+  setModoEdicion,
 }: Props) => {
   return (
     <ScrollView style={styles.contenedor}>
@@ -148,23 +154,47 @@ export const FormularioScreen = ({
           value={descongelador}
         />
 
-        <TouchableOpacity
-          style={styles.boton}
-          onPress={() => {
-            setHoraInicioActividad(
-              new Date().toLocaleTimeString('es-AR', {
-                hour: '2-digit',
-                minute: '2-digit',
-              }),
-            );
+        {/*AGREGADO BTN VOLVER */}
 
-            setVacasRestantes(Number(cantidadVacas));
-
-            setPantalla('grafico');
-          }}
+        <View
+          style={
+            modoEdicion ? styles.filaBotonesCentro : styles.filaBotonesResumen
+          }
         >
-          <Text style={styles.botonTexto}>A DESCONGELAR</Text>
-        </TouchableOpacity>
+          {!modoEdicion && (
+            <TouchableOpacity
+              style={styles.boton}
+              onPress={() => setPantalla('inicio')}
+            >
+              <Text style={styles.botonTexto}>VOLVER</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            style={styles.boton}
+            onPress={() => {
+              if (modoEdicion) {
+                setModoEdicion(false);
+                setPantalla('resumen');
+              } else {
+                setHoraInicioActividad(
+                  new Date().toLocaleTimeString('es-AR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  }),
+                );
+
+                setVacasRestantes(Number(cantidadVacas));
+
+                setPantalla('grafico');
+              }
+            }}
+          >
+            <Text style={styles.botonTexto}>
+              {modoEdicion ? 'GUARDAR CAMBIOS' : 'A DESCONGELAR'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={{ height: 60 }} />

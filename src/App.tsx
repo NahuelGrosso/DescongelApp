@@ -46,6 +46,7 @@ const App = () => {
   const [cronometroPausado, setCronometroPausado] = useState(false);
 
   //
+  const [modoEdicion, setModoEdicion] = useState(false);
   // Estado para controlar las 4 porciones: { activa: bool, segundos: 40, listo: bool }
   const [pajuelas, setPajuelas] = useState([
     { id: 0, activa: false, segundos: 40, listo: false },
@@ -157,6 +158,8 @@ const App = () => {
           setInseminador={setInseminador}
           descongelador={descongelador}
           setDescongelador={setDescongelador}
+          modoEdicion={modoEdicion}
+          setModoEdicion={setModoEdicion}
         />
       )}
 
@@ -193,6 +196,7 @@ const App = () => {
           pajuelasUtilizadas={pajuelasUtilizadas}
           pajuelasRotas={pajuelasRotas}
           setPantalla={setPantalla}
+          setModoEdicion={setModoEdicion}
         />
       )}
 
