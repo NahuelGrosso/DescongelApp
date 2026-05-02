@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image} from 'react-native';
 import logo from '../assets/logo.png'
-import { styles } from '../styles';
+import { styles } from '../styles/index';
 
 type Props = {
   setPantalla: (pantalla: string) => void;

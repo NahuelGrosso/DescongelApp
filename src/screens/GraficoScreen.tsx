@@ -3,7 +3,7 @@ import Svg, { Circle, Line, G, Path, Text as SvgText } from 'react-native-svg';
 import { useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import Sound from 'react-native-sound';
-import { styles } from '../styles';
+import { styles } from '../styles/index';
 import { obtenerPathCuadrante } from '../util';
 
 type Pajuela = {

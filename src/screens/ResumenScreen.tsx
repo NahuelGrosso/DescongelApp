@@ -10,7 +10,7 @@ import {
 import XLSX from 'xlsx';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
-import { styles } from '../styles';
+import { styles } from '../styles/index';
 
 type Props = {
   fecha: string;

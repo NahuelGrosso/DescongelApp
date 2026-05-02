@@ -3,7 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity, Alert } from 'react-native';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
-import { styles } from '../styles';
+import { styles } from '../styles/index';
 
 type Props = {
   archivo: any;
