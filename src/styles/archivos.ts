@@ -1,12 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export const archivosStyles = StyleSheet.create({
-  scrollDetalle: {
-    paddingTop: 1,
-    paddingBottom: 10,
-    flexGrow: 1,
-  },
-
   labelMes: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -20,5 +14,16 @@ export const archivosStyles = StyleSheet.create({
     padding: 14,
     marginBottom: 8,
     marginTop: 10,
+  },
+
+  filaArchivo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  checkbox: {
+    fontSize: 20,
+    marginRight: 10,
   },
 });

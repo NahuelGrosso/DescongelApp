@@ -2,6 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import RNFS from 'react-native-fs';
 import { styles } from '../styles/index';
+import { cargarArchivosAgrupados } from '../utils/listadoArchivos';
+import {
+  toggleSeleccionArchivo,
+  limpiarSeleccion,
+  estaSeleccionado,
+} from '../utils/seleccionArchivos';
+
+import {
+  eliminarArchivosSeleccionados,
+  compartirExcelsSeleccionados,
+} from '../utils/accionesArchivos';
 
 type Props = {
   setPantalla: (pantalla: string) => void;
@@ -11,58 +22,11 @@ type Props = {
 export const ArchivosScreen = ({ setPantalla, setArchivoCargado }: Props) => {
   const [grupos, setGrupos] = useState<any>({});
   const [mesAbierto, setMesAbierto] = useState('');
-  const cargarArchivos = async () => {
-    try {
-      const ruta = RNFS.DownloadDirectoryPath + '/DescongelApp';
 
-      const lista = await RNFS.readDir(ruta);
+  const [modoSeleccion, setModoSeleccion] = useState(false);
+  const [seleccionados, setSeleccionados] = useState<string[]>([]);
 
-      const jsons = lista
-        .filter(item => item.name.endsWith('.json'))
-        .sort((a, b) => Number(b.mtime) - Number(a.mtime));
-      const agrupados: any = {};
-
-      jsons.forEach(item => {
-        const partes = item.name.split('_');
-        const fecha = partes[0]; // 30-04-2026
-
-        const [, mes, anio] = fecha.split('-');
-
-        const nombresMeses = [
-          '',
-          'Enero',
-          'Febrero',
-          'Marzo',
-          'Abril',
-          'Mayo',
-          'Junio',
-          'Julio',
-          'Agosto',
-          'Septiembre',
-          'Octubre',
-          'Noviembre',
-          'Diciembre',
-        ];
-
-        const clave = nombresMeses[Number(mes)] + ' ' + anio;
-
-        if (!agrupados[clave]) {
-          agrupados[clave] = [];
-        }
-
-        agrupados[clave].push(item);
-      });
-
-      setGrupos(agrupados);
-    } catch (error) {
-      setGrupos({});
-    }
-  };
-
-    const abrirArchivo = async (
-        ruta: string,
-        nombre:string,
-    ) => {
+  const abrirArchivo = async (ruta: string, nombre: string) => {
     try {
       const contenido = await RNFS.readFile(ruta, 'utf8');
 
@@ -77,54 +41,130 @@ export const ArchivosScreen = ({ setPantalla, setArchivoCargado }: Props) => {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    cargarArchivos();
-  }, []);
+ const cargar = async () => {
+   const datos = await cargarArchivosAgrupados();
+
+   setGrupos(datos);
+ };
+
+ useEffect(() => {
+   cargar();
+ }, []);
+
+  const cancelarSeleccion = () => {
+    setModoSeleccion(false);
+    setSeleccionados(limpiarSeleccion());
+  };
 
   return (
-    <ScrollView style={styles.contenedor}>
-      <Text style={styles.titulo}>Archivos Guardados 🗂️</Text>
-
-      {Object.keys(grupos).map((mes, i) => (
-        <View key={i}>
-          <TouchableOpacity
-            style={styles.tarjetaMes}
-            onPress={() => setMesAbierto(mesAbierto === mes ? '' : mes)}
-          >
-            <Text style={styles.labelMes}>
-              {mesAbierto === mes ? '🔽  ' : '▶️  '}
-              {mes} ({grupos[mes].length})
-            </Text>
-          </TouchableOpacity>
-
-          {mesAbierto === mes &&
-            grupos[mes].map((archivo: any, j: number) => (
-              <TouchableOpacity
-                key={j}
-                style={styles.tarjeta}
-                    onPress={() =>
-                        abrirArchivo(
-                            archivo.path,
-                            archivo.name,
-                        )}
-              >
-                <Text style={styles.label}>
-                  {archivo.name
-                    .replace('.json', '')
-                    .replace('_', ' - ')
-                    .replace(/_/g, ' ')}
-                </Text>
-              </TouchableOpacity>
-            ))}
-        </View>
-      ))}
-
-      <TouchableOpacity
-        style={styles.boton}
-        onPress={() => setPantalla('inicio')}
+    <View style={styles.contenedor}>
+      <ScrollView
+        style={styles.areaScroll}
+        contentContainerStyle={styles.scrollDetalle}
       >
-        <Text style={styles.botonTexto}>VOLVER</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={styles.titulo}>Archivos Guardados 🗂️</Text>
+
+        {Object.keys(grupos).map((mes, i) => (
+          <View key={i}>
+            <TouchableOpacity
+              style={styles.tarjetaMes}
+              onPress={() => setMesAbierto(mesAbierto === mes ? '' : mes)}
+            >
+              <Text style={styles.labelMes}>
+                {mesAbierto === mes ? '🔽  ' : '▶️  '}
+                {mes} ({grupos[mes].length})
+              </Text>
+            </TouchableOpacity>
+
+            {mesAbierto === mes &&
+              grupos[mes].map((archivo: any, j: number) => (
+                <TouchableOpacity
+                  key={j}
+                  style={styles.tarjeta}
+                  onPress={() => {
+                    if (modoSeleccion) {
+                      setSeleccionados(
+                        toggleSeleccionArchivo(seleccionados, archivo.path),
+                      );
+                    } else {
+                      abrirArchivo(archivo.path, archivo.name);
+                    }
+                  }}
+                >
+                  <View style={styles.filaArchivo}>
+                    <Text style={styles.label}>
+                      {archivo.name
+                        .replace('.json', '')
+                        .replace('_', ' - ')
+                        .replace(/_/g, ' ')}
+                    </Text>
+
+                    {modoSeleccion && (
+                      <Text style={styles.checkbox}>
+                        {estaSeleccionado(seleccionados, archivo.path)
+                          ? '☑️'
+                          : '⬜'}
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              ))}
+          </View>
+        ))}
+      </ScrollView>
+
+      <View style={styles.footerBotones}>
+        {!modoSeleccion ? (
+          <View style={styles.filaBotonesResumen}>
+            <TouchableOpacity
+              style={styles.botonMini}
+              onPress={() => setPantalla('inicio')}
+            >
+              <Text style={styles.textoBotonMini}>VOLVER</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.botonMini}
+              onPress={() => setModoSeleccion(true)}
+            >
+              <Text style={styles.textoBotonMini}>SELECCIONAR</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.filaBotonesResumen}>
+            <TouchableOpacity
+              style={styles.botonMini}
+              onPress={async () => {
+                await eliminarArchivosSeleccionados(seleccionados);
+
+                await cargar();
+
+                cancelarSeleccion();
+              }}
+            >
+              <Text style={styles.textoBotonMini}>ELIMINAR 🗑️</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.botonMini}
+              onPress={async () => {
+                await compartirExcelsSeleccionados(seleccionados);
+
+                cancelarSeleccion();
+              }}
+            >
+              <Text style={styles.textoBotonMini}>COMPARTIR 📤</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.botonMini}
+              onPress={cancelarSeleccion}
+            >
+              <Text style={styles.textoBotonMini}>CANCELAR</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </View>
   );
 };

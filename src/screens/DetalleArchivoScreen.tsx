@@ -1,103 +1,61 @@
 import React from 'react';
 import { View, ScrollView, Text, TouchableOpacity, Alert } from 'react-native';
-import XLSX from 'xlsx';
-import RNFS from 'react-native-fs';
-import Share from 'react-native-share';
 import { styles } from '../styles/index';
+import { descargarExcel, compartirExcel } from '../utils/excel';
+import { eliminarArchivo } from '../utils/archivos';
 
 type Props = {
   archivo: any;
   setPantalla: (pantalla: string) => void;
 };
 
-export
-  const DetalleArchivoScreen = ({ archivo, setPantalla }: Props) => {
-  const descargarExcel = async () => {
-    try {
-      const datos = [
-        ['Campo', 'Valor'],
-        ['Fecha', archivo.fecha],
-        ['Lugar', archivo.lugar],
-        ['Establecimiento', archivo.establecimiento],
-        ['Rodeo', archivo.rodeo],
-        ['Raza', archivo.raza],
-        ['Cantidad Vacas', archivo.cantidadVacas],
-        ['Semen De', archivo.semenDe],
-        ['Toro', archivo.toro],
-        ['Inseminador', archivo.inseminador],
-        ['Descongelador', archivo.descongelador],
-        ['Hora Inicio', archivo.horaInicioActividad],
-        ['Hora Fin', archivo.horaFinActividad],
-        ['Pajuelas Utilizadas', archivo.pajuelasUtilizadas],
-        ['Pajuelas Rotas', archivo.pajuelasRotas],
-      ];
+export const DetalleArchivoScreen = ({ archivo, setPantalla }: Props) => {
+  const datosExcel = [
+    ['Campo', 'Valor'],
+    ['Fecha', archivo.fecha],
+    ['Lugar', archivo.lugar],
+    ['Establecimiento', archivo.establecimiento],
+    ['Rodeo', archivo.rodeo],
+    ['Raza', archivo.raza],
+    ['Cantidad Vacas', archivo.cantidadVacas],
+    ['Semen De', archivo.semenDe],
+    ['Toro', archivo.toro],
+    ['Inseminador', archivo.inseminador],
+    ['Descongelador', archivo.descongelador],
+    ['Hora Inicio', archivo.horaInicioActividad],
+    ['Hora Fin', archivo.horaFinActividad],
+    ['Pajuelas Utilizadas', archivo.pajuelasUtilizadas],
+    ['Pajuelas Rotas', archivo.pajuelasRotas],
+  ];
 
-      const ws = XLSX.utils.aoa_to_sheet(datos);
+  const confirmarEliminar = () => {
+    Alert.alert(
+      'Eliminar archivo',
+      '¿Seguro que querés eliminar esta actividad?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            const ok = await eliminarArchivo(archivo.nombreArchivo);
 
-      const wb = XLSX.utils.book_new();
+            if (ok) {
+              setPantalla('archivos');
+            }
+          },
+        },
+      ],
+    );
+  };
 
-      XLSX.utils.book_append_sheet(wb, ws, 'Actividad');
-
-      const excel = XLSX.write(wb, {
-        type: 'base64',
-        bookType: 'xlsx',
-      });
-
-      const nombre = 'IATF_' + archivo.nombreArchivo.replace('.json', '.xlsx');
-
-      const ruta = RNFS.DownloadDirectoryPath + '/DescongelApp/' + nombre;
-
-      await RNFS.writeFile(ruta, excel, 'base64');
-
-      Alert.alert('Éxito', 'Excel guardado en Descargas/DescongelApp');
-    } catch (error) {
-      Alert.alert('Error', 'No se pudo generar Excel');
-    }
-    };
-    
-    const compartirExcel = async () => {
-      try {
-        const datos = [
-          ['Campo', 'Valor'],
-          ['Fecha', archivo.fecha],
-          ['Lugar', archivo.lugar],
-          ['Establecimiento', archivo.establecimiento],
-          ['Rodeo', archivo.rodeo],
-          ['Raza', archivo.raza],
-          ['Cantidad Vacas', archivo.cantidadVacas],
-          ['Toro', archivo.toro],
-          ['Inseminador', archivo.inseminador],
-          ['Descongelador', archivo.descongelador],
-          ['Pajuelas Utilizadas', archivo.pajuelasUtilizadas],
-          ['Pajuelas Rotas', archivo.pajuelasRotas],
-        ];
-
-        const ws = XLSX.utils.aoa_to_sheet(datos);
-        const wb = XLSX.utils.book_new();
-
-        XLSX.utils.book_append_sheet(wb, ws, 'Actividad');
-
-        const excel = XLSX.write(wb, {
-          type: 'base64',
-          bookType: 'xlsx',
-        });
-
-        const nombre = 'IATF-'+ archivo.nombreArchivo.replace('.json', '.xlsx');
-
-        const ruta = RNFS.CachesDirectoryPath + '/' + nombre;
-
-        await RNFS.writeFile(ruta, excel, 'base64');
-
-        await Share.open({
-          url: 'file://' + ruta,
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          filename: nombre,
-        });
-      } catch (error) {}
-    };
-    return (
+  return (
+    <View style={styles.contenedor}>
       <ScrollView
-        style={styles.contenedor}
+        style={styles.areaScroll}
         contentContainerStyle={styles.scrollDetalle}
       >
         <Text style={styles.titulo}>Detalle de Actividad 📄</Text>
@@ -142,23 +100,48 @@ export
           <Text style={styles.label}>Pajuelas Rotas:</Text>
           <Text>{archivo.pajuelasRotas}</Text>
         </View>
+      </ScrollView>
+
+      <View style={styles.footerBotones}>
+        <TouchableOpacity
+          style={styles.boton}
+          onPress={() => setPantalla('archivos')}
+        >
+          <Text style={styles.botonTexto}>VOLVER</Text>
+        </TouchableOpacity>
 
         <View style={styles.filaBotonesResumen}>
           <TouchableOpacity
             style={styles.botonMini}
-            onPress={() => setPantalla('archivos')}
+            onPress={confirmarEliminar}
           >
-            <Text style={styles.textoBotonMini}>VOLVER</Text>
+            <Text style={styles.textoBotonMini}>ELIMINAR 🗑️</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.botonMini} onPress={descargarExcel}>
+          <TouchableOpacity
+            style={styles.botonMini}
+            onPress={() =>
+              descargarExcel({
+                datosExcel,
+                nombreArchivo: archivo.nombreArchivo,
+              })
+            }
+          >
             <Text style={styles.textoBotonMini}>DESCARGAR ⬇️</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.botonMini} onPress={compartirExcel}>
+          <TouchableOpacity
+            style={styles.botonMini}
+            onPress={() =>
+              compartirExcel({
+                datosExcel,
+                nombreArchivo: archivo.nombreArchivo,
+              })
+            }
+          >
             <Text style={styles.textoBotonMini}>COMPARTIR 📤</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    );
-};
+      </View>
+    </View>
+  );};

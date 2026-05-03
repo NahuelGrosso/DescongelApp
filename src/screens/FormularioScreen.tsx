@@ -76,86 +76,92 @@ export const FormularioScreen = ({
   setModoEdicion,
 }: Props) => {
   return (
-    <ScrollView style={styles.contenedor}>
-      <Text style={styles.titulo}>DescongelApp 🐂</Text>
+    <View style={styles.contenedor}>
+      <ScrollView
+        style={styles.areaScroll}
+        contentContainerStyle={styles.scrollDetalle}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.titulo}>DescongelApp 🐂</Text>
 
-      <View style={styles.tarjeta}>
-        <Text style={styles.headerSeccion}>📍 Datos del Rodeo</Text>
+        <View style={styles.tarjeta}>
+          <Text style={styles.headerSeccion}>📍 Datos del Rodeo</Text>
 
-        <Text style={styles.label}>Fecha:</Text>
-        <Text style={styles.datoFijo}>{fecha}</Text>
+          <Text style={styles.label}>Fecha:</Text>
+          <Text style={styles.datoFijo}>{fecha}</Text>
 
-        <Text style={styles.label}>Lugar:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej: Ayacucho"
-          onChangeText={setLugar}
-          value={lugar}
-        />
+          <Text style={styles.label}>Lugar:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ej: Ayacucho"
+            onChangeText={setLugar}
+            value={lugar}
+          />
 
-        <Text style={styles.label}>Establecimiento:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej: La Posta"
-          onChangeText={setEstablecimiento}
-          value={establecimiento}
-        />
+          <Text style={styles.label}>Establecimiento:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ej: La Posta"
+            onChangeText={setEstablecimiento}
+            value={establecimiento}
+          />
 
-        <Text style={styles.label}>Tipo de Rodeo:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej: Vaquillonas"
-          onChangeText={setRodeo}
-          value={rodeo}
-        />
+          <Text style={styles.label}>Tipo de Rodeo:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ej: Vaquillonas"
+            onChangeText={setRodeo}
+            value={rodeo}
+          />
 
-        <Text style={styles.label}>Raza:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej: Angus"
-          onChangeText={setRaza}
-          value={raza}
-        />
+          <Text style={styles.label}>Raza:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ej: Angus"
+            onChangeText={setRaza}
+            value={raza}
+          />
 
-        <Text style={styles.label}>Cantidad de animales:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="0"
-          keyboardType="numeric"
-          onChangeText={setCantidadVacas}
-          value={cantidadVacas}
-        />
+          <Text style={styles.label}>Cantidad de animales:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="0"
+            keyboardType="numeric"
+            onChangeText={setCantidadVacas}
+            value={cantidadVacas}
+          />
 
-        <Text style={styles.headerSeccion}>🧬 Datos del Semen</Text>
+          <Text style={styles.headerSeccion}>🧬 Datos del Semen</Text>
 
-        <Text style={styles.label}>Semen de:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setSemenDe}
-          value={semenDe}
-        />
+          <Text style={styles.label}>Semen de:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setSemenDe}
+            value={semenDe}
+          />
 
-        <Text style={styles.label}>Nombre del Toro:</Text>
-        <TextInput style={styles.input} onChangeText={setToro} value={toro} />
+          <Text style={styles.label}>Nombre del Toro:</Text>
+          <TextInput style={styles.input} onChangeText={setToro} value={toro} />
 
-        <Text style={styles.headerSeccion}>👤 Personal</Text>
+          <Text style={styles.headerSeccion}>👤 Personal</Text>
 
-        <Text style={styles.label}>Inseminador:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setInseminador}
-          value={inseminador}
-        />
+          <Text style={styles.label}>Inseminador:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setInseminador}
+            value={inseminador}
+          />
 
-        <Text style={styles.label}>Quién Descongela:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setDescongelador}
-          value={descongelador}
-        />
+          <Text style={styles.label}>Quién Descongela:</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setDescongelador}
+            value={descongelador}
+          />
+        </View>
+      </ScrollView>
 
-        {/*AGREGADO BTN VOLVER */}
-
+      <View style={styles.footerBotones}>
         <View
           style={
             modoEdicion ? styles.filaBotonesCentro : styles.filaBotonesResumen
@@ -196,8 +202,6 @@ export const FormularioScreen = ({
           </TouchableOpacity>
         </View>
       </View>
-
-      <View style={{ height: 60 }} />
-    </ScrollView>
+    </View>
   );
 };

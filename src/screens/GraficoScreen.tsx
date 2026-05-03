@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import Sound from 'react-native-sound';
 import { styles } from '../styles/index';
-import { obtenerPathCuadrante } from '../util';
+import { obtenerPathCuadrante } from '../utils/util';
 
 type Pajuela = {
   id: number;

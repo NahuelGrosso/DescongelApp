@@ -28,6 +28,8 @@ export const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7f8c8d',
     marginTop: 0,
+    flex: 1,
+    marginRight: 10,
   },
 
   boton: {
@@ -35,7 +37,7 @@ export const globalStyles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 0,
   },
 
   botonTexto: {
@@ -70,5 +72,27 @@ export const globalStyles = StyleSheet.create({
   textoBotonMini: {
     fontSize: 11,
     color: '#f8f2f2',
+  },
+
+  areaScroll: {
+    flex: 1,
+  },
+
+  scrollContenido: {
+    paddingBottom: 20,
+  },
+
+  footerBotones: {
+    paddingTop: 8,
+    paddingBottom: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+    backgroundColor: '#f0f2f5',
+  },
+
+  scrollDetalle: {
+    paddingTop: 1,
+    paddingBottom: 10,
+    flexGrow: 1,
   },
 });
